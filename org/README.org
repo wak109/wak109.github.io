@@ -1,0 +1,38 @@
+* Preparation
+
+1. install "node.js"
+
+2. install "org-js"
+
+
+#+BEGIN_SRC
+npm install org
+#+END_SRC
+
+2. install "jquery"
+
+#+BEGIN_SRC
+npm install jquery
+#+END_SRC
+
+3. install "browserify"
+
+#+BEGIN_SRC
+npm install -g browserify
+#+END_SRC
+
+
+* Compile
+
+   #+BEGIN_SRC
+   sh ~/AppData/Roaming/npm/browserify <JavaScript> -o <JavaScript-for-browser>
+   #+END_SRC
+
+* Execute
+
+** Windows
+
+#+BEGIN_SRC
+node <JavaScript>
+#+END_SRC
+
