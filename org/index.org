@@ -1,3 +1,10 @@
 # -*- mode:org; coding:utf-8 -*-
 
-* Hello, world!!
+#+TITLE: Org-Mode on GitHub page
+#+LANGUAGE: ja
+
+* H1 Sample
+
+** H2 Sample
+
+*** H3 Sample
