@@ -1,16 +1,23 @@
 /* vim: set expandtab ts=4 fenc=utf-8 : */
 
-var $ = require("jquery")
-var org = require("org")
 
-$(function() {
-//    $("#org").html(org2html("* hehe"));
-    $.get("org/index.org", function(data) {
+//$(function() {
+//    $.get("org/index.org", function(data) {
+//        $("#org").html(org2html(data));
+//    });
+//});
+
+main = function(org_file) {
+    var $ = require("jquery")
+
+    $.get(org_file, function(data) {
         $("#org").html(org2html(data));
     });
-});
+}
 
 function org2html(orgCode) {
+    var org = require("org")
+
     var parser = new org.Parser();
     var orgDocument = parser.parse(orgCode);
     var orgHTMLDocument = orgDocument.convert(org.ConverterHTML, {
