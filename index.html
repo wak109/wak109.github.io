@@ -4,9 +4,15 @@
   <head>
     <meta charset="UTF-8"/>
     <title>HTML5 Sample</title>
-    <script src="myorg.browser.js"></script>
+    <script src="orgpage.browser.js"></script>
+    <script>
+      orgpage.init({
+        orgDir : 'org',
+        nodeSelector : "#org"
+      });
+    </script>
   </head>
-  <body onLoad="print_org('org/index.org', '#org')">
+  <body onLoad="orgpage.writeHtml('index.org')">
     <div id="org"></div>
   </body> 
 </html>
