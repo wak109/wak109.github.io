@@ -11,8 +11,19 @@
 
 ************************************************************************/
 
-function org2html(orgCode) {
-    var org = require("org")
+var $ = require("jquery")
+var org = require("org")
+
+function basename(path) {
+    return path.replace(/\\/g, '/').replace(/.*\//, '');
+}
+
+function dirname(path) {
+    return path.replace(/\\/g, '/').replace(/\/[^\/]*$/, '');
+}
+
+
+function org2html(orgCode, orgDir) {
 
     var parser = new org.Parser();
     var orgDocument = parser.parse(orgCode);
@@ -23,12 +34,19 @@ function org2html(orgCode) {
         suppressAutoLink: false
     });
 
-    return orgHTMLDocument.toString();
+    var dom = $.parseHTML(orgHTMLDocument.toString());
+    $(dom).find("a").each(function() {
+        var href = $(this).attr("href");
+        var re = /.org/g;
+        if (href.match(re) != null) {
+            $(this).attr("href", "javascript:orgpage.writeHtml(" + "'" + href + "')" );
+        }
+    });
+    return dom;
 }
 
 
 (function(definition) {
-    // export
     orgpage = definition();
 
 })(function() {
@@ -37,18 +55,21 @@ function org2html(orgCode) {
 
     var orgDir = '.';
     var nodeSelector = 'body';
+    var initFile = 'index.html';
 
     return {
 
         init : function (config) {
-            orgDir = config['orgDir'];
+            orgDir = dirname(config['initFile']);
+            initFile = basename(config['initFile']);
             nodeSelector = config['nodeSelector'];
+
+            this.writeHtml(initFile);
         },
 
         writeHtml : function(orgFile) {
-            var $ = require("jquery")
             $.get(orgDir + '/' + orgFile, function(data) {
-                $(nodeSelector).html(org2html(data));
+                $(nodeSelector).html(org2html(data, orgDir));
             });
         }
     }

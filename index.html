@@ -7,12 +7,13 @@
     <script src="orgpage.browser.js"></script>
     <script>
       orgpage.init({
-        orgDir : 'org',
+        initFile : 'org/index.org',
         nodeSelector : "#org"
       });
     </script>
   </head>
-  <body onLoad="orgpage.writeHtml('index.org')">
-    <div id="org"></div>
+  <body>
+    <div id="org">
+    </div>
   </body> 
 </html>
