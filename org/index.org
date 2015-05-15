@@ -1,6 +1,6 @@
 # -*- mode:org; coding:utf-8 -*-
 
-#+TITLE: Org-Mode on GitHub page
+#+TITLE: Test
 #+LANGUAGE: ja
 
 * H1 Sample
