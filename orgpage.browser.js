@@ -11085,8 +11085,15 @@ function org2html(orgCode, orgDir) {
     return {
 
         init : function (config) {
-            orgDir = dirname(config['initFile']);
-            initFile = basename(config['initFile']);
+            var elm = document.createElement('a');
+            elm.href = document.URL;
+
+            var doc = elm.search.slice(1);
+
+            // orgDir = dirname(config['initFile']);
+            // initFile = basename(config['initFile']);
+            orgDir = dirname(doc);
+            initFile = basename(doc);
             nodeSelector = config['nodeSelector'];
 
             this.writeHtml(initFile);
