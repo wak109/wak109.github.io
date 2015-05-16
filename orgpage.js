@@ -65,14 +65,16 @@ function org2html(orgCode, orgDir) {
             var elm = document.createElement('a');
             elm.href = document.URL;
 
-            var doc = elm.search.slice(1);
+            if (elm.search != "") {
+                var doc = elm.search.slice(1);
+            }
+            else {
+                var doc = config['initFile'];
+            }
 
-            // orgDir = dirname(config['initFile']);
-            // initFile = basename(config['initFile']);
             orgDir = dirname(doc);
             initFile = basename(doc);
             nodeSelector = config['nodeSelector'];
-
             this.writeHtml(initFile);
         },
 
