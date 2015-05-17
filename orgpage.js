@@ -24,64 +24,103 @@ function dirname(path) {
     return path.replace(/\\/g, '/').replace(/\/[^\/]*$/, '');
 }
 
+function decodeProps(propsStr) 
+{ 
+    var props = {}, hash; 
+    var hashes = propsStr.split('&'); 
+    for(var i = 0; i < hashes.length; i++) { 
+        hash = hashes[i].split('='); 
+        props[hash[0]] = decodeURI(hash[1]); 
+    } 
+    return props; 
+}
 
-function org2html(orgCode, orgDir) {
+
+function encodeProps(props) 
+{
+    var propsStr = ""
+
+    for (var key in props) {
+        if (props.hasOwnProperty(key)) {
+            if (propsStr != "") {
+                propsStr += "&";
+            }
+            propsStr += key + "=" + encodeURI(props[key]);
+        }
+    }
+    return propsStr;
+}
+
+function makeProps(url) 
+{
+    return decodeProps(url.slice(url.indexOf('?') + 1));
+}
+
+function makeUrl(props) 
+{
+    return "?" + encodeProps(props);
+}
+
+function getOrgHtml(orgCode) {
 
     var parser = new org.Parser();
     var orgDocument = parser.parse(orgCode);
-    var orgHTMLDocument = orgDocument.convert(org.ConverterHTML, {
+    return orgDocument.convert(org.ConverterHTML, {
         headerOffset: 1,
         exportFromLineNumber: false,
         suppressSubScriptHandling: false,
         suppressAutoLink: false
     });
+}
 
-    var dom = $.parseHTML(orgHTMLDocument.toString());
-    $(dom).find("a").each(function() {
+function updateOrgLink(orgDom, props) {
+    $(orgDom).find("a").each(function() {
         var href = $(this).attr("href");
         var re = /.org/g;
         if (href.match(re) != null) {
-            $(this).attr("href", "javascript:orgpage.writeHtml(" + "'" + href + "')" );
+            props['orgFile'] = dirname(props['orgFile']) + "/" + href;
+            $(this).attr("href", makeUrl(props));
         }
     });
-    return dom;
+    return orgDom;
 }
 
+function showHtml(url) {
+    var props = makeProps(url);
+    $.get(props["orgFile"], function(orgCode) {
+        var orgHtml = getOrgHtml(orgCode);
+        var orgDom = $.parseHTML(orgHtml.toString());
+        $(props["selector"]).html(updateOrgLink(orgDom, props));
+    });
+}
 
-(function(definition) {
-    orgpage = definition();
+(function(definition){
 
-})(function() {
+    showHtml(document.URL);
 
-    'use strict'
+    // CommonJS
+    if (typeof exports === "object") {
+        module.exports = definition();
 
-    var orgDir = '.';
-    var nodeSelector = 'body';
-    var initFile = 'index.html';
+    // RequireJS
+    } else if (typeof define === "function" && define.amd) {
+        define(definition);
 
-    return {
-
-        init : function (config) {
-            var elm = document.createElement('a');
-            elm.href = document.URL;
-
-            if (elm.search != "") {
-                var doc = elm.search.slice(1);
-            }
-            else {
-                var doc = config['initFile'];
-            }
-
-            orgDir = dirname(doc);
-            initFile = basename(doc);
-            nodeSelector = config['nodeSelector'];
-            this.writeHtml(initFile);
-        },
-
-        writeHtml : function(orgFile) {
-            $.get(orgDir + '/' + orgFile, function(data) {
-                $(nodeSelector).html(org2html(data, orgDir));
-            });
-        }
+    // <script>
+    } else {
+        orgpage = definition();
     }
+
+})(function(){// 実際の定義を行う関数
+    'use strict';
+
+    var thisModule = function thisModule(){};
+
+    thisModule.prototype = {
+        makeUrl : makeUrl,
+        makeProps : makeProps,
+        showHtml : showHtml
+    }
+
+    return thisModule;
 });
