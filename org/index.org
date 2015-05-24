@@ -1,28 +1,17 @@
 # -*- mode:org; coding:utf-8 -*-
 
-#+TITLE: Test
+#+TITLE: WAK109@github
 #+LANGUAGE: ja
 
-* H1 Sample
+* WAK109 Web Site
 
-** H2 Sample
+** Org-Mode Pages
 
-*** H3 Sample
+[[http://orgmode.org/][Org-Mode]]で書かれた文書をjavascriptでHTMLに変換しています。
+Webブラウザが変換するので、HTMLに変換してpublishする必要は
+ありません。
 
-- [[https://github.com/mooz/org-js][org-js]]
-- Link Example :: [[README.org][README]]
+[[orgpage.org][orgpage]]
 
-#+BEGIN_SRC python
+変換には[[https://github.com/mooz/org-js][org-js]]を使用しています。
 
-import sys
-import codeop
-import re
-
-re_exp = re.compile(':\s*$')
-
-for _line in iter(sys.stdin.readline, ""):
-    if re_exp.match(_line):
-        eval(codeop.compile_command(_line, '<stdin>', 'eval'))
-    else:
-        eval(codeop.compile_command(_line, '<stdin>', 'single'))
-#+END_SRC
