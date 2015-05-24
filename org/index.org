@@ -12,3 +12,17 @@
 - [[https://github.com/mooz/org-js][org-js]]
 - Link Example :: [[README.org][README]]
 
+#+BEGIN_SRC python
+
+import sys
+import codeop
+import re
+
+re_exp = re.compile(':\s*$')
+
+for _line in iter(sys.stdin.readline, ""):
+    if re_exp.match(_line):
+        eval(codeop.compile_command(_line, '<stdin>', 'eval'))
+    else:
+        eval(codeop.compile_command(_line, '<stdin>', 'single'))
+#+END_SRC
