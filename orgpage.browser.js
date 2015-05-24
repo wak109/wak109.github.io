@@ -11111,9 +11111,10 @@ function showHtml(props) {
         //var orgDom = $.parseHTML(orgHtml.toString());
         var orgDom = $.parseHTML(orgHtml.contentHTML);
         orgDom = updateOrgLink(orgDom, props);
-        updateCss(props);
 
+        updateCss(props);
         $('title').html(orgHtml.title);
+
         $(props["selector"]).html(orgDom);
     });
 }
