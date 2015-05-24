@@ -24,16 +24,78 @@ function dirname(path) {
     return path.replace(/\\/g, '/').replace(/\/[^\/]*$/, '');
 }
 
-function decodeProps(propsStr) 
-{ 
-    var props = {}, hash; 
-    var hashes = propsStr.split('&'); 
-    for(var i = 0; i < hashes.length; i++) { 
-        hash = hashes[i].split('='); 
-        props[hash[0]] = decodeURI(hash[1]); 
-    } 
-    return props; 
+function encodeProps(props) 
+{
+    var propsStr = ""
+
+    for (var key in props) {
+        if (props.hasOwnProperty(key)) {
+            if (propsStr != "") {
+                propsStr += "&";
+            }
+            propsStr += encodeURIComponent(key) + "=" + encodeURIComponent(props[key]);
+        }
+    }
+    return propsStr;
 }
+
+function getOrgHtml(orgCode) {
+
+    var parser = new org.Parser();
+    var orgDocument = parser.parse(orgCode);
+    return orgDocument.convert(org.ConverterHTML, {
+        headerOffset: 1,
+        exportFromLineNumber: false,
+        suppressSubScriptHandling: false,
+        suppressAutoLink: false
+    });
+}
+
+/************************************************************************
+Properties from URL
+************************************************************************/
+
+function updateOrgLink(orgDom, props) {
+    $(orgDom).find("a").each(function() {
+        var href = $(this).attr("href");
+        var re = /.org$/;
+        if (href.match(re) != null) {
+            props['orgFile'] = dirname(props['orgFile']) + "/" + href;
+            $(this).attr("href", "?" + encodeProps(props));
+        }
+    });
+    return orgDom;
+}
+
+function updateCss(props) {
+
+    var $head = $("head");
+    var $headlinklast = $head.find("link[rel='stylesheet']:last");
+    var linkElement = "<link rel='stylesheet' href='" + props['css'] + "' type='text/css' media='screen'>";
+    if ($headlinklast.length){
+        $headlinklast.after(linkElement);
+    }
+    else {
+        $head.append(linkElement);
+    }
+}
+
+function showHtml(props) {
+    $.get(props["orgFile"], function(orgCode) {
+        var orgHtml = getOrgHtml(orgCode);
+        //var orgDom = $.parseHTML(orgHtml.toString());
+        var orgDom = $.parseHTML(orgHtml.contentHTML);
+        orgDom = updateOrgLink(orgDom, props);
+        updateCss(props);
+
+        $('title').html(orgHtml.title);
+        $(props["selector"]).html(orgDom);
+    });
+}
+
+/************************************************************************
+Properties from URL
+************************************************************************/
 
 function parseQuery(str)
 {
@@ -59,21 +121,6 @@ function parseQuery(str)
     return query;
 }
 
-function encodeProps(props) 
-{
-    var propsStr = ""
-
-    for (var key in props) {
-        if (props.hasOwnProperty(key)) {
-            if (propsStr != "") {
-                propsStr += "&";
-            }
-            propsStr += encodeURIComponent(key) + "=" + encodeURIComponent(props[key]);
-        }
-    }
-    return propsStr;
-}
-
 function makeProps(url) 
 {
     var tagIndex = url.indexOf('#');
@@ -83,43 +130,14 @@ function makeProps(url)
         return parseQuery(url.slice(url.indexOf('?') + 1, tagIndex));
 }
 
-function getOrgHtml(orgCode) {
 
-    var parser = new org.Parser();
-    var orgDocument = parser.parse(orgCode);
-    return orgDocument.convert(org.ConverterHTML, {
-        headerOffset: 1,
-        exportFromLineNumber: false,
-        suppressSubScriptHandling: false,
-        suppressAutoLink: false
-    });
-}
-
-function updateOrgLink(orgDom, props) {
-    $(orgDom).find("a").each(function() {
-        var href = $(this).attr("href");
-        var re = /.org/g;
-        if (href.match(re) != null) {
-            props['orgFile'] = dirname(props['orgFile']) + "/" + href;
-            // $(this).attr("href", makeUrl(props));
-            $(this).attr("href", "?" + encodeProps(props));
-        }
-    });
-    return orgDom;
-}
-
-function showHtml(props) {
-    $.get(props["orgFile"], function(orgCode) {
-        var orgHtml = getOrgHtml(orgCode);
-        var orgDom = $.parseHTML(orgHtml.toString());
-        $(props["selector"]).html(updateOrgLink(orgDom, props));
-    });
-}
-
+/************************************************************************
+Export
+************************************************************************/
 
 (function(){
     orgpage = {
         show: showHtml,
-        param: makeProps
+        properties: makeProps
     };
 })();

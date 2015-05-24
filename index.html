@@ -6,14 +6,15 @@
     <title>HTML5 Sample</title>
     <script src="orgpage.browser.js"></script>
     <script>
-      var param = orgpage.param(document.URL);
-      if (typeof param.orgFile === 'undefined') {
-        param = {
+      var props = orgpage.properties(document.URL);
+      if (typeof props.orgFile === 'undefined') {
+        props = {
           orgFile : 'org/index.org',
-          selector : '#org'
+          selector : '#org',
+          css : 'css/solarized-light.min.css'
         }
       }
-      orgpage.show(param);
+      orgpage.show(props);
     </script>
   </head>
   <body>
