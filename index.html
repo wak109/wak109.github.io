@@ -2,10 +2,22 @@
 <!-- vim: set expandtab fenc=utf-8 ts=2 : -->
 <html>
   <head>
+    <meta charset="UTF-8"/>
+    <title>HTML5 Sample</title>
+    <script src="orgpage.browser.js"></script>
     <script>
-      location.href="orgpage.html?orgFile=org/index.org&selector=#org";
+      var param = orgpage.param(document.URL);
+      if (typeof param.orgFile === 'undefined') {
+        param = {
+          orgFile : 'org/index.org',
+          selector : '#org'
+        }
+      }
+      orgpage.show(param);
     </script>
   </head>
   <body>
+    <div id="org">
+    </div>
   </body> 
 </html>
