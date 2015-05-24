@@ -1,0 +1,33 @@
+# -*- mode:org; coding:utf-8 -*-
+
+#+TITLE: Org Page
+#+LANGUAGE: ja
+
+* Preparation
+
+** install "node.js"
+
+** install "org-js"
+
+#+BEGIN_SRC bash
+npm install org
+#+END_SRC
+
+** install "jquery"
+
+#+BEGIN_SRC bash
+npm install jquery
+#+END_SRC
+
+** install "browserify"
+
+#+BEGIN_SRC bash
+npm install browserify
+#+END_SRC
+
+
+* Compile
+
+#+BEGIN_SRC
+sh ~/AppData/Roaming/npm/browserify <JavaScript> -o <JavaScript-for-browser>
+#+END_SRC
