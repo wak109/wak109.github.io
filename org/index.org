@@ -1,0 +1,6 @@
+# -*- mode:org; coding:utf-8 -*-
+
+#+TITLE: INDEX
+#+LANGUAGE: ja
+
+* Hello, world!!
