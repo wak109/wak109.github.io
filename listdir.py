@@ -4,6 +4,7 @@
 from itertools import ifilter
 
 import argparse
+import hashlib
 import os
 import re
 import stat
@@ -12,9 +13,15 @@ import xml.etree.ElementTree as ET
 
 DEFAULT_TARGET_DIR = '.'
 DEFAULT_OUTPUT_FILE = sys.stdout
-DEFAULT_XSL = 'xsl/html5-hello-world.xsl'
-DEFAULT_REGEX = None
+DEFAULT_XSL = 'xsl/listdir.xsl'
+DEFAULT_REGEX = r'.*'
 
+def md5(path):
+    hash_md5 = hashlib.md5()
+    with open(path, "rb") as f:
+        for chunk in iter(lambda: f.read(4096), b""):
+            hash_md5.update(chunk)
+    return hash_md5.hexdigest()
 
 def create_xsl_root(xsl):
     root = ET.Element(None)
@@ -29,6 +36,7 @@ def create_file_xml(path, regex):
     elem = ET.Element('file')
     elem.set('name', os.path.basename(path))
     elem.set('mtime', str(os.stat(path).st_mtime))
+    elem.set('md5', md5(path))
     return elem
 
 
