@@ -13,16 +13,19 @@
       <head>
         <meta charset="utf-8"/>
         <title>Directory Tree</title>
+        <link rel="stylesheet" type="text/css" href="css/treeview.css"/>
       </head>
       <body>
         <header>
           <nav>
             <h1>Navigation</h1>
-            <ul>
-              <xsl:apply-templates select="directory/*">
-                <xsl:with-param name="path" select="directory/@name"/>
-              </xsl:apply-templates>
-            </ul>
+            <div class="css-treeview">
+              <ul>
+                <xsl:apply-templates select="directory/*">
+                  <xsl:with-param name="path" select="directory/@name"/>
+                </xsl:apply-templates>
+              </ul>
+            </div>
           </nav>
         </header>
         <main>
@@ -38,12 +41,17 @@
   <xsl:template match="directory">
     <xsl:param name="path"/>
     <li>
-      <span>
+      <input type="checkbox">
+        <xsl:attribute name="id">
+          <xsl:value-of select="concat($path, @name)"/>
+        </xsl:attribute>
+      </input>
+      <label>
         <xsl:attribute name="href">
           <xsl:value-of select="concat($path, @name)"/>
         </xsl:attribute>
         <xsl:value-of select="@name"/>
-      </span>
+      </label>
       <ul>
         <xsl:apply-templates select="*">
           <xsl:with-param name="path" select="concat($path, '/', @name)"/>
@@ -55,12 +63,12 @@
   <xsl:template match="file">
     <xsl:param name="path"/>
     <li>
-      <span>
+      <a>
         <xsl:attribute name="href">
           <xsl:value-of select="concat($path, '/', @name)"/>
         </xsl:attribute>
         <xsl:value-of select="@name"/>
-      </span>
+      </a>
     </li>
   </xsl:template>
 
