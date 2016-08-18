@@ -14,8 +14,11 @@
         <meta charset="utf-8"/>
         <title>Directory Tree</title>
         <link rel="stylesheet" type="text/css" href="css/treeview.css"/>
+        <script type="text/javascript" src="js/jquery-3.1.0.min.js"/>
+        <script type="text/javascript" src="js/marked.js"/>
+        <script type="text/javascript" src="js/website-maker.js"/>
       </head>
-      <body>
+      <body onload="main()">
         <header>
           <nav>
             <h1>Navigation</h1>
@@ -30,8 +33,9 @@
         </header>
         <main>
           <article>
-            <h1>Article</h1>
-            <p>Hello, world!!</p>
+            <div class="container">
+              <div class="markdown" default="md/readme.md"/>
+            </div>
           </article>
         </main>
       </body>
