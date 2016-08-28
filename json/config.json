@@ -1,0 +1,7 @@
+{
+  "dir" : ".",
+  "regex" : ".*\\.(md|markdown)$",
+  "output" : "xml/files.xml",
+  "xsl" : "xsl/listdir.xsl"
+}
+
