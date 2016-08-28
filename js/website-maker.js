@@ -1,19 +1,5 @@
 // vim: set ts=4 et sw=4 sts=4 fileencoding=utf-8:
 
-defaultConfig = 'json/config.json';
-
-function convertMarkdownToHtml(node, src) {
-    return $.ajax({
-        url : src,
-        success : function(data){
-            $(node).append(marked(data));
-        },
-        error : function(){
-            $(node).append("[ERROR] Failed to load " + src);
-        }
-    });
-}
-
 function queryStringToJson(query) {
     var obj = {} 
     query.split('&').forEach(function(pair) {
@@ -25,44 +11,6 @@ function queryStringToJson(query) {
     return obj;
 }
 
-function makeXmlFileNode(node) {
-    var element = document.createElement('file');
-    element.setAttribute('md5', node.md5);
-    element.setAttribute('title', node.title);
-    return element;
-}
-
-function makeXmlDirectoryNode(node) {
-    var element = document.createElement('directory');
-    for (var key in node) {
-        var child = makeXmlNode(node[key]);
-        child.setAttribute('name', key);
-        element.appendChild(child);
-    };
-    return element
-}
-
-function makeXmlNode(node) {
-    if (node.md5 && node.title) {
-        return makeXmlFileNode(node);
-    }
-    else {
-        return makeXmlDirectoryNode(node);
-    }
-}
-
-function loadXMLDoc(filename) {
-    if (window.ActiveXObject) {
-        xhttp = new ActiveXObject("Msxml2.XMLHTTP");
-    }
-    else {
-        xhttp = new XMLHttpRequest();
-    }
-    xhttp.open("GET", filename, false);
-    try {xhttp.responseType = "msxml-document"} catch(err) {} // Helping IE11
-    xhttp.send("");
-    return xhttp.responseXML;
-}
 
 function transformXml(xml, xsl)
 {
