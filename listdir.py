@@ -5,16 +5,14 @@ from itertools import ifilter
 
 import argparse
 import hashlib
+import json
 import os
 import re
 import stat
 import sys
 import xml.etree.ElementTree as ET
 
-DEFAULT_TARGET_DIR = '.'
-DEFAULT_OUTPUT_FILE = sys.stdout
-DEFAULT_XSL = 'xsl/listdir.xsl'
-DEFAULT_REGEX = r'.*'
+DEFAULT_CONFIG = 'json/config.json'
 
 def md5(path):
     hash_md5 = hashlib.md5()
@@ -23,10 +21,12 @@ def md5(path):
             hash_md5.update(chunk)
     return hash_md5.hexdigest()
 
-def create_xsl_root(xsl):
-    root = ET.Element(None)
-    root.append(ET.PI("xml-stylesheet", "type='text/xsl' href='%s'" % (xsl,)))
-    return root
+def read_config(path):
+    with open(path, "rb") as fp:
+        return json.load(fp, 'utf-8')
+
+def create_xsl_root():
+    return ET.Element(None)
 
 
 def create_file_xml(path, regex):
@@ -45,10 +45,9 @@ def create_directory_xml(path, regex):
     elem.set('name', os.path.basename(path))
     elem.set('mtime', str(os.stat(path).st_mtime))
 
-    for node in ifilter(lambda x: x is not None,
-            [ create_node_xml(os.path.join(path, child), regex) \
-                for child in os.listdir(path) ]):
+    for node in create_child_node_list(path, regex):
         elem.append(node)
+
     return elem if len(list(elem)) > 0 else None
 
 
@@ -57,36 +56,55 @@ def create_node_xml(path, regex):
            create_file_xml(path, regex) if os.path.isfile(path) else \
            None
 
-def create_xml_doc(path, xsl, regex):
-    root = create_xsl_root(xsl)
-    root.append(create_node_xml(path, regex))
+
+def create_child_node_list(path, regex):
+    return ifilter(lambda x: x is not None,
+            [ create_node_xml(os.path.join(path, child), regex) \
+                for child in os.listdir(path) ])
+
+
+def create_top_node_xml(path, regex):
+    elem = ET.Element('top')
+    elem.set('path', path)
+    elem.set('regex', regex)
+
+    for child in create_child_node_list(path, regex):
+        elem.append(child)
+
+    return elem    
+
+
+def create_xml_doc(path, regex):
+    root = create_xsl_root()
+    root.append(create_top_node_xml(path, regex))
+    
     return root
 
 
 def create_argparser():
     parser = argparse.ArgumentParser(description=__doc__)
 
+    parser.add_argument('-c',
+            dest='config',
+            default=DEFAULT_CONFIG,
+            metavar='<config-file>',
+            help='Config JSON file')
+
     parser.add_argument('dir',
-            type=str, default=DEFAULT_TARGET_DIR,
+            type=str, default=None,
             nargs='?',
             metavar='<target-directory>',
             help='Target Directory')
 
     parser.add_argument('-o',
             dest='output',
-            default=DEFAULT_OUTPUT_FILE,
+            default=None,
             metavar='<output-file>',
-            help='Target Directory')
-
-    parser.add_argument('-x',
-            dest='xsl',
-            default=DEFAULT_XSL,
-            metavar='<xsl-file>',
-            help='XSL file')
+            help='Output File')
 
     parser.add_argument('-r',
             dest='regex',
-            default=DEFAULT_REGEX,
+            default=None,
             metavar='<regex>',
             help='Regex for File Name')
 
@@ -99,7 +117,8 @@ def create_argparser():
 if __name__ == '__main__':
 
     args = create_argparser().parse_args()
+    config = read_config(args.config)
 
     ET.ElementTree(
-            create_xml_doc(args.dir, args.xsl, args.regex)).write(
-            args.output, xml_declaration=True, encoding='utf-8')
+            create_xml_doc(args.dir or config['dir'], args.regex or config['regex'])).write( 
+                args.output or config['output'], xml_declaration=True, encoding='utf-8')
