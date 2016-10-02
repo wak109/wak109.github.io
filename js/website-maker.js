@@ -33,7 +33,7 @@ function transformXml(xml, xsl)
 }
 
 function getValue(value, queryData) {
-    var match = value.match(/\${([^:]*)(?:\:=([^}]*))/);
+    var match = value.match(/\${([^:}]*)(?:\:\=([^}]*))/);
 
     if (match) {
         var value = queryData[match[1]];
