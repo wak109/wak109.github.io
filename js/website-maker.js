@@ -32,6 +32,27 @@ function transformXml(xml, xsl)
     }
 }
 
+// jQuery Deferred
+//
+function getText(url) {
+    var dfd = new $.Deferred;
+    var value = localStorage.getItem(url)
+
+    if (value != null) {
+        dfd.resolve(value);
+    }
+    else {
+        $.when(
+            $.get(url, null, null, 'text')
+        )
+        .done(function(file) {
+            localStorage.setItem(url, file)
+            dfd.resolve(file)
+        })
+    }
+    return dfd.promise();
+}
+
 function getValue(value, queryData) {
     var match = value.match(/\${([^:}]*)(?:\:\=([^}]*))/);
 
@@ -50,6 +71,7 @@ function getValue(value, queryData) {
 }
 
 function main(uri) {
+
     var queryData = queryStringToJson(uri.slice(uri.indexOf('?')+1));
 
     $(".insert-xml").each(function(i, node) {
@@ -57,10 +79,10 @@ function main(uri) {
         var xsl_url = getValue(node.attributes["insert-xsl"].value, queryData);
         
         $.when(
-            $.get(xml_url), $.get(xsl_url)
+            getText(xml_url), getText(xsl_url)
         )
         .done(function(xml, xsl) {
-            $(node).append(transformXml(xml[0], xsl[0]));
+            $(node).append(transformXml($.parseXML(xml), $.parseXML(xsl)));
         })
         .fail(function() {
            alert('failed');
@@ -71,7 +93,7 @@ function main(uri) {
         var md_url = getValue(node.attributes["insert-src"].value, queryData);
 
         $.when(
-            $.get(md_url)
+            getText(md_url)
         )
         .done(function(md) {
             $(node).append(marked(md));
