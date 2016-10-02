@@ -1,8 +1,6 @@
 #!/usr/bin/env python
 # vim: set ts=4 et sw=4 sts=4 fileencoding=utf-8:
 
-from itertools import ifilter
-
 import argparse
 import hashlib
 import json
@@ -12,7 +10,20 @@ import stat
 import sys
 import xml.etree.ElementTree as ET
 
+if sys.version_info < (3, 0):
+    from itertools import ifilter as filter
+
 DEFAULT_CONFIG = 'json/config.json'
+
+
+def get_markdown_title(path, regex=r'^#+\s+(.*)$'):
+    with open(path) as f:
+        try:
+            return next(filter(lambda match: match != None,
+                map(lambda line: re.match(regex, line),
+                    iter(f.readline, '')))).group(1)
+        except StopIteration:
+            return os.path.splitext(os.path.basename(path))[0]
 
 def md5(path):
     hash_md5 = hashlib.md5()
@@ -22,8 +33,12 @@ def md5(path):
     return hash_md5.hexdigest()
 
 def read_config(path):
-    with open(path, "rb") as fp:
-        return json.load(fp, 'utf-8')
+    if sys.version_info < (3, 0):
+        with open(path, "rb") as fp:
+            return json.load(fp, 'utf-8')
+    else:
+        with open(path, "r") as fp:
+            return json.load(fp)
 
 def create_xsl_root():
     return ET.Element(None)
@@ -37,6 +52,7 @@ def create_file_xml(path, regex):
     elem.set('name', os.path.basename(path))
     elem.set('mtime', str(os.stat(path).st_mtime))
     elem.set('md5', md5(path))
+    elem.set('title', get_markdown_title(path))
     return elem
 
 
@@ -58,7 +74,7 @@ def create_node_xml(path, regex):
 
 
 def create_child_node_list(path, regex):
-    return ifilter(lambda x: x is not None,
+    return filter(lambda x: x is not None,
             [ create_node_xml(os.path.join(path, child), regex) \
                 for child in os.listdir(path) ])
 
@@ -120,5 +136,9 @@ if __name__ == '__main__':
     config = read_config(args.config)
 
     ET.ElementTree(
-            create_xml_doc(args.dir or config['dir'], args.regex or config['regex'])).write( 
-                args.output or config['output'], xml_declaration=True, encoding='utf-8')
+        create_xml_doc(
+            args.dir or config['dir'],
+            args.regex or config['regex']
+            )).write( 
+                args.output or config['output'],
+                xml_declaration=True, encoding='utf-8')
