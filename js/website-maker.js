@@ -32,8 +32,6 @@ function transformXml(xml, xsl)
     }
 }
 
-// jQuery Deferred
-//
 function getText(url) {
     var dfd = new $.Deferred;
     var value = localStorage.getItem(url)
@@ -45,9 +43,9 @@ function getText(url) {
         $.when(
             $.get(url, null, null, 'text')
         )
-        .done(function(file) {
-            localStorage.setItem(url, file)
-            dfd.resolve(file)
+        .done(function(text) {
+            localStorage.setItem(url, text)
+            dfd.resolve(text)
         })
     }
     return dfd.promise();
@@ -75,28 +73,23 @@ function main(uri) {
     var queryData = queryStringToJson(uri.slice(uri.indexOf('?')+1));
 
     $(".insert-xml").each(function(i, node) {
-        var xml_url = getValue(node.attributes["insert-src"].value, queryData);
-        var xsl_url = getValue(node.attributes["insert-xsl"].value, queryData);
+        xml_url = getValue(node.attributes["insert-src"].value, queryData);
+        xsl_url = getValue(node.attributes["insert-xsl"].value, queryData);
         
-        $.when(
-            getText(xml_url), getText(xsl_url)
-        )
-        .done(function(xml, xsl) {
-            $(node).append(transformXml($.parseXML(xml), $.parseXML(xsl)));
-        })
-        .fail(function() {
-           alert('failed');
+        Promise.all([fetch(xml_url), fetch(xsl_url)])
+        .then(responses => Promise.all(responses.map(response => response.text())))
+        .then(function(texts) {
+            $(node).append(transformXml($.parseXML(texts[0]), $.parseXML(texts[1])));
         });
     });
 
     $(".insert-md").each(function(i, node) {
         var md_url = getValue(node.attributes["insert-src"].value, queryData);
 
-        $.when(
-            getText(md_url)
-        )
-        .done(function(md) {
-            $(node).append(marked(md));
+        fetch(md_url)
+        .then(response => response.text())
+        .then(function(text) {
+            $(node).append(marked(text));
         });
     });
 }
