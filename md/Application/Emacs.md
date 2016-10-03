@@ -32,7 +32,7 @@ fakecygpty$ md5sum.exe /usr/bin/gcc
 6a4ece7eb8958b1e6093313c74c1b475 */usr/bin/gcc
 ```
 
-- [SSH with NTEmace][https://www.emacswiki.org/emacs/SshWithNTEmacs]
-- [fakecygpty][https://github.com/d5884/fakecygpty]
-- [fakecygpty を使うための設定][https://www49.atwiki.jp/ntemacs/pages/28.html]
+- [https://www.emacswiki.org/emacs/SshWithNTEmacs](SSH with NTEmacs)
+- [https://github.com/d5884/fakecygpty](fakecygpty)
+- [https://www49.atwiki.jp/ntemacs/pages/28.html](fakecygptyを使うための設定)
 

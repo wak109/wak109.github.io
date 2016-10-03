@@ -2,5 +2,5 @@
 
 # Myrica
 
-[Myrica][https://myrica.estable.jp/]はWindowsでも使える
-等幅フォントです。いけます。
+[https://myrica.estable.jp/](Myrica)はWindowsでも
+使える等幅フォントです。いけます。
