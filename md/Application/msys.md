@@ -9,7 +9,7 @@ C:/Users /home
 
 ## pacman
 
-[pacman][https://wiki.archlinuxjp.org/index.php/Pacman]
+[pacman](https://wiki.archlinuxjp.org/index.php/Pacman)
 
 - pacman -S <package_name1> [package_name2...] : 指定したパッケージをインストールする
 - pacman -Sl [repository] : パッケージを一覧表示する（リポジトリを指定可能）
