@@ -1,5 +1,6 @@
 // vim: set ts=4 et sw=4 sts=4 fileencoding=utf-8:
 
+const CACHE_NAME = "hehe1";
 const URLS_TO_CACHE = [
     './index.git',
     './readme.md'
