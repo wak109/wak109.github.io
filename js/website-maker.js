@@ -70,8 +70,20 @@ function getValue(value, queryData) {
 
 function main(uri) {
 
-    navigator.serviceWorker.register('./js/website-maker-cache.js')
-        .catch(console.error.bind(console));
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register(
+            '/js/website-maker-cache.js',
+            {
+                scope: '/md/'
+            }
+        ).then(function(reg) {
+            // registration worked
+            console.log('Registration succeeded. Scope is ' + reg.scope);
+        }).catch(function(error) {
+            // registration failed
+            console.log('Registration failed with ' + error);
+        });
+    };
     
     var queryData = queryStringToJson(uri.slice(uri.indexOf('?')+1));
 
