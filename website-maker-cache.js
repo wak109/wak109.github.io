@@ -36,11 +36,13 @@ self.addEventListener('activate', (event) => {
 });
 
 self.addEventListener('fetch', (event) => {
+
+    console.log('fetch event');
+
     event.respondWith(
         caches.match(event.request)
             .then((response) => {
                 if (response) {
-                    console.log('Hit cache');
                     return response;
                 }
 
