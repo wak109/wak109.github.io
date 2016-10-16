@@ -70,6 +70,9 @@ function getValue(value, queryData) {
 
 function main(uri) {
 
+    navigator.serviceWorker.register('./website-maker-cache.js')
+        .catch(console.error.bind(console));
+    
     var queryData = queryStringToJson(uri.slice(uri.indexOf('?')+1));
 
     $(".insert-xml").each(function(i, node) {
@@ -77,19 +80,21 @@ function main(uri) {
         xsl_url = getValue(node.attributes["insert-xsl"].value, queryData);
         
         Promise.all([fetch(xml_url), fetch(xsl_url)])
-        .then(responses => Promise.all(responses.map(response => response.text())))
-        .then(function(texts) {
-            $(node).append(transformXml($.parseXML(texts[0]), $.parseXML(texts[1])));
-        });
+            .then(responses => Promise.all(
+		responses.map(response => response.text())))
+            .then(function(texts) {
+		$(node).append(transformXml(
+		    $.parseXML(texts[0]), $.parseXML(texts[1])));
+            });
     });
 
     $(".insert-md").each(function(i, node) {
         var md_url = getValue(node.attributes["insert-src"].value, queryData);
 
         fetch(md_url)
-        .then(response => response.text())
-        .then(function(text) {
-            $(node).append(marked(text));
-        });
+            .then(response => response.text())
+            .then(function(text) {
+		$(node).append(marked(text));
+            });
     });
 }
