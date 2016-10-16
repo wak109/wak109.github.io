@@ -43,8 +43,7 @@ self.addEventListener('fetch', (event) => {
     console.log(event.request.url);
 
     event.respondWith(
-        caches
-        .match(event.request)
+        caches.match(event.request)
         .then((response) => {
 
             // Hit the cache
@@ -57,8 +56,7 @@ self.addEventListener('fetch', (event) => {
             let fetchRequest = event.request.clone();
 
             return
-                fetch(fetchRequest)
-                .then((response) => {
+                fetch(fetchRequest).then((response) => {
                     if (!response || response.status !== 200 ||
                         response.type !== 'basic') {
                         console.log("Failed to fetch" + event.request.url);
@@ -68,8 +66,7 @@ self.addEventListener('fetch', (event) => {
                     // Clone the response because response is Stream
                     let responseToCache = response.clone();
 
-                    caches.open(CACHE_NAME)
-                    .then((cache) => {
+                    caches.open(CACHE_NAME).then((cache) => {
                         console.log("Save " + event.request.url + " to cache");
                         cache.put(event.request, responseToCache);
                     });
