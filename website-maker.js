@@ -108,11 +108,12 @@ function main(uri) {
         ).then(function(reg) {
             // registration worked
             console.log('Registration succeeded. Scope is ' + reg.scope);
-            convert(uri);
         }).catch(function(error) {
             // registration failed
             console.log('Registration failed with ' + error);
-            convert(uri);
         });
     };
+
+    convert(uri);
+
 }
