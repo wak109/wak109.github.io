@@ -68,22 +68,7 @@ function getValue(value, queryData) {
     }
 }
 
-function main(uri) {
-
-    if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register(
-            './website-maker-cache.js',
-            {
-                scope: './md/'
-            }
-        ).then(function(reg) {
-            // registration worked
-            console.log('Registration succeeded. Scope is ' + reg.scope);
-        }).catch(function(error) {
-            // registration failed
-            console.log('Registration failed with ' + error);
-        });
-    };
+function convert(uri) {
     
     var queryData = queryStringToJson(uri.slice(uri.indexOf('?')+1));
 
@@ -109,4 +94,25 @@ function main(uri) {
 		$(node).append(marked(text));
             });
     });
+
+}
+
+function main(uri) {
+
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register(
+            './website-maker-cache.js',
+            {
+                scope: './md/'
+            }
+        ).then(function(reg) {
+            // registration worked
+            console.log('Registration succeeded. Scope is ' + reg.scope);
+            convert(uri);
+        }).catch(function(error) {
+            // registration failed
+            console.log('Registration failed with ' + error);
+            convert(uri);
+        });
+    };
 }
