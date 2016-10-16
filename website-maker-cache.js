@@ -40,6 +40,7 @@ self.addEventListener('fetch', (event) => {
         caches.match(event.request)
             .then((response) => {
                 if (response) {
+                    console.log('Hit cache');
                     return response;
                 }
 
@@ -51,6 +52,7 @@ self.addEventListener('fetch', (event) => {
                 return fetch(fetchRequest)
                     .then((response) => {
                         if (!response || response.status !== 200 || response.type !== 'basic') {
+                            console.log('Failed to fetch');
                             return response;
                         }
 
@@ -61,9 +63,11 @@ self.addEventListener('fetch', (event) => {
 
                         caches.open(CACHE_NAME)
                             .then((cache) => {
+                                console.log('Save to cache');
                                 cache.put(event.request, responseToCache);
                             });
 
+                        console.log('Return');
                         return response;
                     });
             })
