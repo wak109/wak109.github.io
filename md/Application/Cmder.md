@@ -13,6 +13,7 @@ Windows用のTerminal Emulation。Tab切替機能つき。
 ## Usage
 
 ちょっと待てよ。
+ここでさ。
 
 ## Link
 - [本家サイト][cmder]
