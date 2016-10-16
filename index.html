@@ -7,11 +7,6 @@
     <link rel="stylesheet" type="text/css" href="css/treeview.css"/>
     <script type="text/javascript">
         if ('serviceWorker' in navigator) {
-            const CACHE_NAME = 'website-maker-v4';
-            const URLS_TO_CACHE = [
-                './index.git',
-                './readme.md'
-            ];
             navigator.serviceWorker.register(
 		        './cache.js',
                 {
