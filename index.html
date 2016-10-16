@@ -24,6 +24,7 @@
         function erase_cache_all () {
             caches.keys().then((cacheNames) => {
                 cacheNames.map((cacheName) => {
+                    console.log("Delete cache: " + cacheName);
                     caches.delete(cacheName);
                 })
             })
