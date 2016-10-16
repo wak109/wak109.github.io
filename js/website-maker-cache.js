@@ -1,37 +1,76 @@
 // vim: set ts=4 et sw=4 sts=4 fileencoding=utf-8:
 
-self.addEventListener('install', (event) => {
-    console.log("install")
-});
+
+'use strict';
+
+const CACHE_NAME = 'cache-v1';
+const urlsToCache = [
+    './',
+    './styles/main.css',
+    './images/image.jpg',
+    './script/main.js'
+];
 
 self.addEventListener('install', (event) => {
-    console.log("activate")
+    event.waitUntil(
+        caches.open(CACHE_NAME)
+            .then((cache) => {
+                console.log('Opened cache');
+		
+                // 指定されたリソースをキャッシュに追加する
+                return cache.addAll(urlsToCache);
+            })
+    );
+});
+
+self.addEventListener('activate', (event) => {
+    var cacheWhitelist = [CACHE_NAME];
+
+    event.waitUntil(
+        caches.keys().then((cacheNames) => {
+            return Promise.all(
+                cacheNames.map((cacheName) => {
+                    // ホワイトリストにないキャッシュ(古いキャッシュ)は削除する
+                    if (cacheWhitelist.indexOf(cacheName) === -1) {
+                        return caches.delete(cacheName);
+                    }
+                })
+            );
+        })
+    );
 });
 
 self.addEventListener('fetch', (event) => {
-
-    console.log("fetch")
-
     event.respondWith(
-        let fetchRequest = event.request.clone();
-
-	// TODO: fetch from cache
-	
-        return fetch(fetchRequest)
+        caches.match(event.request)
             .then((response) => {
-
-		// Failure case
-                if (!response || response.status !== 200 ||
-		    response.type !== 'basic') {
+                if (response) {
                     return response;
                 }
 
-		// Successful case
+                // 重要：リクエストを clone する。リクエストは Stream なので
+                // 一度しか処理できない。ここではキャッシュ用、fetch 用と2回
+                // 必要なので、リクエストは clone しないといけない
+                let fetchRequest = event.request.clone();
 
-                let responseToCache = response.clone();
+                return fetch(fetchRequest)
+                    .then((response) => {
+                        if (!response || response.status !== 200 || response.type !== 'basic') {
+                            return response;
+                        }
 
-		// TODO: save to cache
-                return response;
-            });
+                        // 重要：レスポンスを clone する。レスポンスは Stream で
+                        // ブラウザ用とキャッシュ用の2回必要。なので clone して
+                        // 2つの Stream があるようにする
+                        let responseToCache = response.clone();
+
+                        caches.open(CACHE_NAME)
+                            .then((cache) => {
+                                cache.put(event.request, responseToCache);
+                            });
+
+                        return response;
+                    });
+            })
     );
 });
