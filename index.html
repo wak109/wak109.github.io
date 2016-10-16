@@ -21,6 +21,12 @@
                 console.log('Registration failed with ' + error);
             });
         };
+
+        function erase_cache_all () {
+            caches.keys().then((cacheNames) => {
+                caches.delete(cacheName);
+                })
+        }
     </script>
     <script type="text/javascript" src="js/jquery-3.1.0.min.js"></script>
     <script type="text/javascript" src="js/marked.js"></script>
@@ -40,5 +46,8 @@
         </div>
       </article>
     </main>
+    <form name="test">
+        <input type="button" name="Clear" value="Clear" onClick="erase_cache_all()">
+    </form>
   </body>
 </html>
