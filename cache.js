@@ -1,6 +1,6 @@
 // vim: set ts=4 et sw=4 sts=4 fileencoding=utf-8:
 
-const CACHE_NAME = 'website-maker-v4';
+const CACHE_NAME = cache_name()
 const URLS_TO_CACHE = [
     './index.git',
     './readme.md'
