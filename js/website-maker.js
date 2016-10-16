@@ -70,8 +70,8 @@ function getValue(value, queryData) {
 
 function main(uri) {
 
-    navigator.serviceWorker.register('./website-maker-cache.js')
-        .catch(console.error.bind(console));
+//    navigator.serviceWorker.register('./website-maker-cache.js')
+//        .catch(console.error.bind(console));
     
     var queryData = queryStringToJson(uri.slice(uri.indexOf('?')+1));
 
