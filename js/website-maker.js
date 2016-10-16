@@ -101,7 +101,7 @@ function main(uri) {
 
     if ('serviceWorker' in navigator) {
         navigator.serviceWorker.register(
-            './website-maker-cache.js',
+            './js/website-maker-cache.js',
             {
                 scope: '/'
             }
