@@ -1,13 +1,5 @@
 // vim: set ts=4 et sw=4 sts=4 fileencoding=utf-8:
 
-
-const CACHE_NAME = 'website-maker-v3';
-const urlsToCache = [
-    './index.git',
-    './readme.md'
-];
-
-
 self.addEventListener('install', (event) => {
     event.waitUntil(
         caches.open(CACHE_NAME)
@@ -15,7 +7,7 @@ self.addEventListener('install', (event) => {
                 console.log('Opened cache');
 		
                 // Add resources listed in urlsToCache
-                return cache.addAll(urlsToCache);
+                return cache.addAll(URLS_TO_CACHE);
             })
     );
 });
