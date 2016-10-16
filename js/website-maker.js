@@ -72,9 +72,9 @@ function main(uri) {
 
     if ('serviceWorker' in navigator) {
         navigator.serviceWorker.register(
-            '/js/website-maker-cache.js',
+            './js/website-maker-cache.js',
             {
-                scope: '/md/'
+                scope: './md/'
             }
         ).then(function(reg) {
             // registration worked
