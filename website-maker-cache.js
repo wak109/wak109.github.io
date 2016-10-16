@@ -1,10 +1,12 @@
 // vim: set ts=4 et sw=4 sts=4 fileencoding=utf-8:
 
 
-const CACHE_NAME = 'cache-v3';
+const CACHE_NAME = 'website-maker-v1';
 const urlsToCache = [
+    './index.git',
     './readme.md'
 ];
+
 
 self.addEventListener('install', (event) => {
     event.waitUntil(
@@ -12,64 +14,66 @@ self.addEventListener('install', (event) => {
             .then((cache) => {
                 console.log('Opened cache');
 		
-                // 指定されたリソースをキャッシュに追加する
+                // Add resources listed in urlsToCache
                 return cache.addAll(urlsToCache);
             })
     );
 });
 
+
 self.addEventListener('activate', (event) => {
     var cacheWhitelist = [CACHE_NAME];
 
     event.waitUntil(
-        caches.keys().then((cacheNames) => {
-            return Promise.all(
-                cacheNames.map((cacheName) => {
-                    // ホワイトリストにないキャッシュ(古いキャッシュ)は削除する
-                    if (cacheWhitelist.indexOf(cacheName) === -1) {
-                        return caches.delete(cacheName);
-                    }
-                })
-            );
-        })
-    );
+        caches.keys()
+            .then((cacheNames) => {
+                return Promise.all(
+                    cacheNames.map((cacheName) => {
+                        // Delete caches not listed in cacheWhiteList 
+                        if (cacheWhitelist.indexOf(cacheName) === -1) {
+                            return caches.delete(cacheName);
+                        }
+                    })
+                );
+            })
+        );
 });
+
 
 self.addEventListener('fetch', (event) => {
 
-    console.log('fetch event');
+    console.log(event.request.url);
 
     event.respondWith(
         caches.match(event.request)
             .then((response) => {
+
+                // Hit the cache
                 if (response) {
+                    console.log("Found " + event.request.url + " in Cache");
                     return response;
                 }
 
-                // 重要：リクエストを clone する。リクエストは Stream なので
-                // 一度しか処理できない。ここではキャッシュ用、fetch 用と2回
-                // 必要なので、リクエストは clone しないといけない
+                // Clone the request because request is Stream
                 let fetchRequest = event.request.clone();
 
                 return fetch(fetchRequest)
                     .then((response) => {
                         if (!response || response.status !== 200 || response.type !== 'basic') {
-                            console.log('Failed to fetch');
+                            console.log("Failed to fetch" + event.request.url);
                             return response;
                         }
 
-                        // 重要：レスポンスを clone する。レスポンスは Stream で
-                        // ブラウザ用とキャッシュ用の2回必要。なので clone して
-                        // 2つの Stream があるようにする
+                        // Clone the response because response is Stream
                         let responseToCache = response.clone();
 
                         caches.open(CACHE_NAME)
                             .then((cache) => {
-                                console.log('Save to cache');
+                                console.log("Save " + event.request.url + " to cache");
                                 cache.put(event.request, responseToCache);
                             });
 
-                        console.log('Return');
+                        console.log('Return response');
                         return response;
                     });
             })
