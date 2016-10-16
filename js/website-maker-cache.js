@@ -1,6 +1,17 @@
 // vim: set ts=4 et sw=4 sts=4 fileencoding=utf-8:
 
+self.addEventListener('install', (event) => {
+    console.log("install")
+});
+
+self.addEventListener('install', (event) => {
+    console.log("activate")
+});
+
 self.addEventListener('fetch', (event) => {
+
+    console.log("fetch")
+
     event.respondWith(
         let fetchRequest = event.request.clone();
 
