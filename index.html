@@ -1,9 +1,26 @@
 <!DOCTYPE html>
+<!-- vim: set ts=4 et sw=4 sts=4 fileencoding=utf-8: -->
 <html lang="ja">
   <head>
     <meta charset="utf-8" />
     <title>Directory Tree</title>
     <link rel="stylesheet" type="text/css" href="css/treeview.css"/>
+    <script type="text/javascript">
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register(
+		'./cache.js',
+                {
+                    scope: '/'
+                }
+            ).then(function(reg) {
+                // registration worked
+                console.log('Registration succeeded. Scope is ' + reg.scope);
+            }).catch(function(error) {
+                // registration failed
+                console.log('Registration failed with ' + error);
+            });
+        };
+    </script>
     <script type="text/javascript" src="js/jquery-3.1.0.min.js"></script>
     <script type="text/javascript" src="js/marked.js"></script>
     <script type="text/javascript" src="js/website-maker.js"></script>
@@ -12,7 +29,7 @@
     <header>
       <nav>
         <h1>Navigation</h1>
-	<div class="css-treeview insert-xml" insert-src="xml/files.xml" insert-xsl="xsl/listdir.xsl" />
+    <div class="css-treeview insert-xml" insert-src="xml/files.xml" insert-xsl="xsl/listdir.xsl" />
       </nav>
     </header>
     <main>

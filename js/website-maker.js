@@ -68,8 +68,7 @@ function getValue(value, queryData) {
     }
 }
 
-function convert(uri) {
-    
+function main(uri) {
     var queryData = queryStringToJson(uri.slice(uri.indexOf('?')+1));
 
     $(".insert-xml").each(function(i, node) {
@@ -94,26 +93,4 @@ function convert(uri) {
 		$(node).append(marked(text));
             });
     });
-
-}
-
-function main(uri) {
-
-    if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register(
-            './js/website-maker-cache.js',
-            {
-                scope: '/'
-            }
-        ).then(function(reg) {
-            // registration worked
-            console.log('Registration succeeded. Scope is ' + reg.scope);
-        }).catch(function(error) {
-            // registration failed
-            console.log('Registration failed with ' + error);
-        });
-    };
-
-    convert(uri);
-
 }
