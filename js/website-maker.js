@@ -103,7 +103,7 @@ function main(uri) {
         navigator.serviceWorker.register(
             './website-maker-cache.js',
             {
-                scope: './md/'
+                scope: '/'
             }
         ).then(function(reg) {
             // registration worked
