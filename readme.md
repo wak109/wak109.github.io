@@ -1,6 +1,3 @@
-<!--
-
--->
 # README
 
 ## Description
@@ -19,3 +16,11 @@ Technical information and some personal stuff
 ## Policy
 
 Only static contents, no server-side processing, rich client-side technologies, XSL, JavaScript etc. Smart client, stupid network.
+
+
+## Preparation
+
+1. Add the symbolic link to .git/index
+```
+ln -s .git/index index.git
+```
