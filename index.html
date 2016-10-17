@@ -7,7 +7,28 @@
     <link rel="stylesheet" type="text/css" href="css/treeview.css"/>
     <script type="text/javascript">
         console.log("loading script...");
-        if ('serviceWorker' in navigator) {
+
+        function use_service_worker() {
+            var userAgent = navigator.userAgent.match(/(Firefox|Chrome)\/(\d+\.)/);
+            if (userAgent) {
+                var agent = userAgent[1];
+                var version = parseInt(userAgent[2]);
+            }
+            if (
+            if (('serviceWorker' in navigator) &&
+                (!userAgent ||
+                    (agent === 'Firefox' && version >= 46) ||
+                    (agent === 'Chrome'  && version >= 50)
+                )
+            ) {
+                return true;
+            }
+            else {
+                return false;
+            }
+        }
+
+        if (use_service_worker() == true) {
             navigator.serviceWorker.register(
 		        './cache_manager.js',
                 {
