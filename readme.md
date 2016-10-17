@@ -22,5 +22,5 @@ Only static contents, no server-side processing, rich client-side technologies, 
 
 1. Add the symbolic link to .git/index
 ```
-ln -s .git/index index.git
+ln .git/index index.git
 ```
