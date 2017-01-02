@@ -13,3 +13,11 @@ Windowsのことについて。
    ```
    C:\local_data\app\emacs-24.5-IME-patched-generic-cpu\bin\emacsclientw.exe -n --server-file %HOME%\.emacs.d\server\server --alternate-editor C:\local_data\app\emacs-24.5-IME-patched-generic-cpu\bin\runemacs.exe
    ```
+
+## Surface Pro 3
+
+Ins Keyがないので[Sharp Key][SharpKey]で[Ins Keyを他のキーに割り当てられる][MapInsKey]。
+
+
+[SharpKey]:http://sharpkeys.codeplex.com/
+[MapInsKey]:http://www.hanselman.com/blog/HowToMapAnInsertKeyOnYourSurfacePro3Keyboard.aspx
