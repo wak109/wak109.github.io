@@ -46,6 +46,9 @@ def counter_genexp(max):
 
 で、それをごっちゃにしてやっちゃいけない関数
 
+   _NOTE1: Python 2.7 ではエラーになるので無問題_
+
+
 ```python
 # やっちゃいけない関数
 def counter_gen_mixed(max):
@@ -60,11 +63,9 @@ def counter_gen_mixed(max):
 単にジェネレータ関数を **抜ける** だけで、意図した値を返して
 くれるわけじゃない。
 
-```
+```python
 print(list(counter_gen_mixed(10)))
 print(list(counter_gen_mixed(11)))
 ```
 
 は、上は `[0, 2, 4, 6, 8]` 、下は `[]` となる。
-
-
