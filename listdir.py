@@ -87,13 +87,13 @@ def create_top_node_xml(path, regex):
     for child in create_child_node_list(path, regex):
         elem.append(child)
 
-    return elem    
+    return elem
 
 
 def create_xml_doc(path, regex):
     root = create_xsl_root()
     root.append(create_top_node_xml(path, regex))
-    
+
     return root
 
 
@@ -139,6 +139,6 @@ if __name__ == '__main__':
         create_xml_doc(
             args.dir or config['dir'],
             args.regex or config['regex']
-            )).write( 
+            )).write(
                 args.output or config['output'],
                 xml_declaration=True, encoding='utf-8')
