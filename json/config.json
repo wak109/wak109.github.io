@@ -2,6 +2,7 @@
   "dir" : ".",
   "regex" : ".*\\.(md|markdown)$",
   "output" : "xml/files.xml",
-  "xsl" : "xsl/listdir.xsl"
+  "xsl" : "xsl/listdir.xsl",
+  "index.git" : "index.git"
 }
 

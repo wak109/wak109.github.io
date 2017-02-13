@@ -14,7 +14,6 @@
                 var agent = userAgent[1];
                 var version = parseInt(userAgent[2]);
             }
-            if (
             if (('serviceWorker' in navigator) &&
                 (!userAgent ||
                     (agent === 'Firefox' && version >= 46) ||

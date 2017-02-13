@@ -47,6 +47,9 @@
         <xsl:attribute name="href">
           <xsl:value-of select="concat('?file=', $path, '%2F', @name)"/>
         </xsl:attribute>
+        <xsl:attribute name="id">
+          <xsl:value-of select="concat('$path, '%2F', @name)"/>
+        </xsl:attribute>
         <xsl:value-of select="@title"/>
       </a>
     </li>
